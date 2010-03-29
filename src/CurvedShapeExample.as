@@ -37,7 +37,7 @@ package
             world.framerateIndependantAnimation = true;
             addChild( world );
 
-            world.createPolyFromLibraryShape( 30, 50, "stars", "/stars_assets.swf" );
+            world.createPolyFromLibraryShape( 30, 50, "stars", "assets/stars_assets.swf" );
             world.addEventListener( Event.COMPLETE, onLoadComplete );
 
         /* var kbm:KeyboardManager = new KeyboardManager( this );

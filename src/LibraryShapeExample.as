@@ -30,9 +30,9 @@ package
             world.framerateIndependantAnimation = true;
             addChild( world );
 
-            world.createPolyFromLibraryShape( 200, 100, "sampleShape", "vectorassets.swf", Math.random() * 360 );
-            world.createPolyFromLibraryShape( 400, 100, "shapeY", "vectorassets.swf", Math.random() * 360 );
-            world.createPolyFromLibraryShape( 100, 100, "shapeY", "vectorassets.swf", Math.random() * 360 );
+            world.createPolyFromLibraryShape( 200, 100, "sampleShape", "assets/vectorassets.swf", Math.random() * 360 );
+            world.createPolyFromLibraryShape( 400, 100, "shapeY", "assets/vectorassets.swf", Math.random() * 360 );
+            world.createPolyFromLibraryShape( 100, 100, "shapeY", "assets/vectorassets.swf", Math.random() * 360 );
         }
 
         private function onRemovedFromStage( e:Event ):void

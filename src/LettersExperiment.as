@@ -39,10 +39,10 @@ package
 
             var lod:int = 10;
 
-            world.createPolyFromLibraryShape( 0, 0, "shape_A", "/letters_assets.swf", 0, lod );
-            world.createPolyFromLibraryShape( 80, 0, "shape_B", "/letters_assets.swf", 0, lod );
-            world.createPolyFromLibraryShape( 160, 0, "shape_C", "/letters_assets.swf", 0, lod );
-            world.createPolyFromLibraryShape( 50, 100, "stars", "/letters_assets.swf", 0, lod );
+            world.createPolyFromLibraryShape( 0, 0, "shape_A", "assets/letters_assets.swf", 0, lod );
+            world.createPolyFromLibraryShape( 80, 0, "shape_B", "assets/letters_assets.swf", 0, lod );
+            world.createPolyFromLibraryShape( 160, 0, "shape_C", "assets/letters_assets.swf", 0, lod );
+            world.createPolyFromLibraryShape( 50, 100, "stars", "assets/letters_assets.swf", 0, lod );
             world.addEventListener( Event.COMPLETE, onLoadComplete );
 
         /* var kbm:KeyboardManager = new KeyboardManager( this );
