@@ -7,7 +7,6 @@ package couk.psyked.box2d.utils
     public class Box2DWorldOptions
     {
 
-        public var aabb:b2AABB;
         public var edgeBottom:Boolean;
         public var edgeLeft:Boolean;
         public var edgeRight:Boolean;

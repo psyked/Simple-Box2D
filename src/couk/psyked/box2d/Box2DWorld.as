@@ -9,16 +9,15 @@ package couk.psyked.box2d
 	import Box2D.Dynamics.Joints.b2RevoluteJointDef;
 	import Box2D.Dynamics.b2Body;
 	import Box2D.Dynamics.b2BodyDef;
+	import Box2D.Dynamics.b2Fixture;
 	import Box2D.Dynamics.b2FixtureDef;
 	import Box2D.Dynamics.b2World;
-	
-	import couk.psyked.box2d.utils.Box2DMouseUtils;
-	import couk.psyked.box2d.utils.Box2DPointUtils;
+
 	import couk.psyked.box2d.utils.Box2DUtils;
 	import couk.psyked.box2d.utils.Box2DWorldOptions;
 	import couk.psyked.box2d.utils.library.Box2DShapeParser;
 	import couk.psyked.box2d.utils.shape.PolygonTool;
-	
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -30,7 +29,7 @@ package couk.psyked.box2d
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.utils.Timer;
-	
+
 	import wumedia.vector.VectorShapes;
 
 	/**
@@ -41,9 +40,13 @@ package couk.psyked.box2d
 	{
 
 		private var _animateOnEnterFrame:Boolean;
+
 		private var _debugDraw:Boolean;
+
 		private var _world:b2World;
+
 		private var options:Box2DWorldOptions;
+
 		private var worldSprite:Sprite;
 
 		/**
@@ -56,8 +59,6 @@ package couk.psyked.box2d
 			options = _options;
 			_world = world;
 			worldSprite = Box2DUtils.addDebugDraw( world );
-			Box2DMouseUtils.initialise( _world, options.scale, worldSprite );
-			Box2DPointUtils.initialise( _world, options.scale, worldSprite );
 
 			addEventListener( Event.ADDED_TO_STAGE, onAddedToStage );
 		}
@@ -105,6 +106,7 @@ package couk.psyked.box2d
 		}
 
 		private var _mouseInteraction:Boolean;
+
 		private var _deferedMouseInteraction:Boolean;
 
 		/**
@@ -143,18 +145,21 @@ package couk.psyked.box2d
 		}
 
 		private var mouseJoint:b2MouseJoint;
+
 		private var mouseDefinition:b2MouseJointDef;
 
 		internal function onMouseDown( e:Event ):void
 		{
 			//trace( Box2DMouseUtils.getTopBodyAtMouse());
-			var body:b2Body = Box2DMouseUtils.getTopBodyAtMouse();
+			//var body:b2Body = Box2DMouseUtils.getTopBodyAtMouse();
+			_world.QueryPoint( onGetBodyAtPoint, pointTob2Vec2( new Point( mouseX, mouseY )));
 
-			if ( body )
+			//if ( body )
+			function onGetBodyAtPoint( fixture:b2Fixture ):void
 			{
 				var mouseJointDef:b2MouseJointDef = new b2MouseJointDef();
-				mouseJointDef.body1 = _world.GetGroundBody();
-				mouseJointDef.body2 = body;
+				mouseJointDef.bodyA = _world.GetGroundBody();
+				mouseJointDef.bodyB = fixture.GetBody();
 				mouseJointDef.target.Set( mouseX / options.scale, mouseY / options.scale );
 				mouseJointDef.maxForce = 30000;
 				//mouseJointDef.timeStep = ( 1 / 30 );
@@ -187,6 +192,7 @@ package couk.psyked.box2d
 		public var mouseInteractExclusions:Array;
 
 		private var _framerateIndependantAnimation:Boolean;
+
 		private var fiaTimer:Timer;
 
 		/**
@@ -272,14 +278,15 @@ package couk.psyked.box2d
 			bodyDef.position.Set( x / options.scale, y / options.scale );
 			bodyDef.linearDamping = 0.25;
 			bodyDef.angularDamping = 0.25;
-			var shapeDef:b2CircleShape = new b2CircleShape();
-			shapeDef.radius = radius / options.scale;
-			shapeDef.density = 1;
-			shapeDef.friction = 5;
+
+			var fd:b2FixtureDef = new b2FixtureDef();
+			fd.density = 1;
+			fd.friction = 5;
+			var shapeDef:b2CircleShape = new b2CircleShape( radius / options.scale );
+
 			var body:b2Body = _world.CreateBody( bodyDef );
 			body.SetAngle(( rotation % 360 ) * ( Math.PI / 180 ));
-			body.CreateFixture( shapeDef );
-			body.SetMassFromShapes();
+			body.CreateFixture( fd );
 		}
 
 		/**
@@ -369,21 +376,28 @@ package couk.psyked.box2d
 			var vertArray:Array = p_vertices.slice( 0 );
 			vertArray.reverse();
 
+			var fd:b2FixtureDef = new b2FixtureDef();
+			fd.friction = 0.5;
+			fd.density = 1.0;
+
 			var polyDef:b2PolygonShape;
 			polyDef = new b2PolygonShape();
-			polyDef.friction = 0.5;
+			//polyDef.friction = 0.5;
+			//polyDef.density = 1.0;
 
-			polyDef.density = 1.0;
-
-			polyDef.vertexCount = p_vertices.length;
+			//polyDef.vertexCount = p_vertices.length;
+			var vertexCount:int = p_vertices.length;
+			var vertices:Array = new Array();
 			var i:int = 0;
 
 			for each ( var vertex:Point in vertArray )
 			{
-				polyDef.vertices[ i ].Set( vertex.x / options.scale, vertex.y / options.scale );
+				//polyDef.vertices[ i ].Set( vertex.x / options.scale, vertex.y / options.scale );
+				vertices[ i ].Set( vertex.x / options.scale, vertex.y / options.scale );
 				i++;
 			}
-			p_body.CreateFixture( polyDef );
+			polyDef.SetAsArray( vertices, vertexCount );
+			p_body.CreateFixture( fd );
 			//p_body.SetMassFromShapes();
 		}
 
@@ -467,17 +481,6 @@ package couk.psyked.box2d
 					makeComplexBody( body, points );
 				}
 			}
-		/* var processedVerts:Array = PolygonTool.getTriangulatedPoly( points );
-
-		   if ( processedVerts != null )
-		   {
-		   makeComplexBody( body, processedVerts );
-		   }
-		   else
-		   {
-		   makeComplexBody( body, PolygonTool.getConvexPoly( points ));
-		 } */
-			 //body.SetMassFromShapes();
 		}
 
 		/**
@@ -543,27 +546,8 @@ package couk.psyked.box2d
 
 		}
 
-
 		internal function makeComplexBody( body:b2Body, processedVerts:Array ):void
 		{
-			/* var tcount:int = int( processedVerts.length / 3 );
-
-			   for ( var i:int = 0; i < tcount; i++ )
-			   {
-			   var shapeDef:b2PolygonShape = new b2PolygonShape();
-			   shapeDef.density = 1;
-			   shapeDef.friction = 5;
-
-			   shapeDef.vertexCount = 3;
-
-			   var index:int = i * 3;
-			   shapeDef.vertices[ 0 ].Set( processedVerts[ index ].x / 30, processedVerts[ index ].y / 30 );
-			   shapeDef.vertices[ 1 ].Set( processedVerts[ index + 1 ].x / 30, processedVerts[ index + 1 ].y / 30 );
-			   shapeDef.vertices[ 2 ].Set( processedVerts[ index + 2 ].x / 30, processedVerts[ index + 2 ].y / 30 );
-			   body.CreateFixture( shapeDef );
-			   }
-			   body.SetMassFromShapes();
-			 body.CreateFixture( shapeDef ); */
 			var vertArray:Array = processedVerts.slice( 0 );
 
 			if ( !PolygonTool.isPolyClockwise( vertArray ))
@@ -576,26 +560,28 @@ package couk.psyked.box2d
 			{
 				for each ( var poly:Array in polys )
 				{
-					//if ( poly != null )
-					//{
+					var fd:b2FixtureDef = new b2FixtureDef();
+					fd.friction = 0.5;
+					fd.density = 1.0;
+
 					var shapeDef:b2PolygonShape;
 					shapeDef = new b2PolygonShape();
-					shapeDef.friction = 0.5;
-					shapeDef.density = 1.0;
-					shapeDef.vertexCount = poly.length;
+					//shapeDef.friction = 0.5;
+					//shapeDef.density = 1.0;
+					//shapeDef.vertexCount = poly.length;
+					var vertices:Array = new Array();
+					var vertexCount:int = poly.length;
 
-					//var i:int = 0;
-					//for each ( vertex in poly.nVertices )
+					fd.shape = shapeDef;
+
 					for ( var i:int = 0; i < poly.length; i++ )
 					{
-						shapeDef.vertices[ i ].Set( poly[ i ].x / options.scale, poly[ i ].y / options.scale );
-							//trace( poly[ i ].x / options.scale, poly[ i ].y / options.scale );
-							//i++;
+						//shapeDef.vertices[ i ].Set( poly[ i ].x / options.scale, poly[ i ].y / options.scale );
+						vertices[ i ].Set( poly[ i ].x / options.scale, poly[ i ].y / options.scale );
 					}
-					body.CreateFixture( shapeDef );
-						//}
+					shapeDef.SetAsArray( vertices, vertexCount );
+					body.CreateFixture( fd );
 				}
-					//body.SetMassFromShapes();
 			}
 			else
 			{
@@ -603,10 +589,6 @@ package couk.psyked.box2d
 			}
 		}
 
-		/**
-		 *
-		 * @param e
-		 */
 		public function updateBox2D( e:Event = null ):void
 		{
 			_world.Step(( 1 / 30 ), 10, 10 );
@@ -620,10 +602,6 @@ package couk.psyked.box2d
 			}
 		}
 
-		/**
-		 *
-		 * @param fn
-		 */
 		public function forEachBody( fn:Function ):void
 		{
 			var node:b2Body = _world.GetBodyList();
@@ -637,21 +615,11 @@ package couk.psyked.box2d
 			}
 		}
 
-		/**
-		 *
-		 * @param point
-		 * @return
-		 */
 		public function pointTob2Vec2( point:Point ):b2Vec2
 		{
 			return new b2Vec2( point.x / options.scale, point.y / options.scale );
 		}
 
-		/**
-		 *
-		 * @param vec
-		 * @return
-		 */
 		public function b2Vec2ToPoint( vec:b2Vec2 ):Point
 		{
 			return new Point( vec.x * options.scale, vec.y * options.scale );
