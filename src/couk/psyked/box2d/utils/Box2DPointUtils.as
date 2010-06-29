@@ -45,7 +45,7 @@ package couk.psyked.box2d.utils
                 {
                     var tShape:b2Shape = shapes[ i ] as b2Shape;
                     //trace(tShape, tShape.GetBody().GetXForm());
-                    var a:b2XForm = tShape.GetBody().GetXForm();
+                    //var a:b2XForm = tShape.GetBody().GetXForm();
                     var inside:Boolean = tShape.TestPoint( tShape.GetBody().GetXForm(), mousePVec );
                     if ( inside )
                     {

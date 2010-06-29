@@ -1,7 +1,6 @@
 package couk.psyked.box2d.utils
 {
-    import Box2D.Collision.Shapes.b2CircleDef;
-    import Box2D.Collision.Shapes.b2PolygonDef;
+    import Box2D.Collision.Shapes.b2PolygonShape;
     import Box2D.Dynamics.b2Body;
     import Box2D.Dynamics.b2BodyDef;
     import Box2D.Dynamics.b2DebugDraw;
@@ -11,20 +10,15 @@ package couk.psyked.box2d.utils
     
     import flash.display.Sprite;
 
-
     public class Box2DUtils
     {
-        public function Box2DUtils()
-        {
-            //
-        }
 
-        public static function createBoxedWorld( options:Box2DWorldOptions ):Box2DWorld
+		public static function createBoxedWorld( options:Box2DWorldOptions ):Box2DWorld
         {
-            var world:b2World = new b2World( options.aabb, options.gravity, true );
+            var world:b2World = new b2World( options.gravity, true );
 
             // Create border of boxes
-            var wallSd:b2PolygonDef = new b2PolygonDef();
+            var wallSd:b2PolygonShape = new b2PolygonShape();
             var wallBd:b2BodyDef = new b2BodyDef();
             var wallB:b2Body;
 
@@ -33,30 +27,30 @@ package couk.psyked.box2d.utils
                 wallBd.position.Set( -100 / options.scale, options.height / options.scale / 2 );
                 wallSd.SetAsBox( 100 / options.scale, ( options.height + 40 ) / options.scale / 2 );
                 wallB = world.CreateBody( wallBd );
-                wallB.CreateShape( wallSd );
-                wallB.SetMassFromShapes();
+                wallB.CreateFixture2( wallSd );
+                //wallB.SetMassFromShapes();
             }
             if ( options.edgeRight )
             {
                 wallBd.position.Set(( options.width + 99 ) / options.scale, options.height / options.scale / 2 );
                 wallB = world.CreateBody( wallBd );
-                wallB.CreateShape( wallSd );
-                wallB.SetMassFromShapes();
+                wallB.CreateFixture2( wallSd );
+                //wallB.SetMassFromShapes();
             }
             if ( options.edgeTop )
             {
                 wallBd.position.Set( options.width / options.scale / 2, -100 / options.scale );
                 wallSd.SetAsBox(( options.width + 40 ) / options.scale / 2, 100 / options.scale );
                 wallB = world.CreateBody( wallBd );
-                wallB.CreateShape( wallSd );
-                wallB.SetMassFromShapes();
+                wallB.CreateFixture2( wallSd );
+                //wallB.SetMassFromShapes();
             }
             if ( options.edgeBottom )
             {
                 wallBd.position.Set( options.width / options.scale / 2, ( options.height + 99 ) / options.scale );
                 wallB = world.CreateBody( wallBd );
-                wallB.CreateShape( wallSd );
-                wallB.SetMassFromShapes();
+                wallB.CreateFixture2( wallSd );
+                //wallB.SetMassFromShapes();
             }
 
             return new Box2DWorld( world , options);

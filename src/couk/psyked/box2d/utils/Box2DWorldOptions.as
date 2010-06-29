@@ -18,26 +18,13 @@ package couk.psyked.box2d.utils
         public var width:int;
         public var world:b2World;
 
-        public function Box2DWorldOptions( _width:int = 800, _height:int = 600, _scale:int = 30, _gravity:Number = 9.8, _aabb:b2AABB = null )
+        public function Box2DWorldOptions( _width:int = 800, _height:int = 600, _scale:int = 30, _gravity:Number = 9.8 )
         {
-
             scale = _scale;
             width = _width;
             height = _height;
 
-            if ( !_aabb )
-            {
-                aabb = new b2AABB();
-                aabb.lowerBound.Set( -1000.0, -1000.0 );
-                aabb.upperBound.Set( 1000.0, 1000.0 );
-            }
-            else
-            {
-                aabb = _aabb;
-            }
-
             gravity = new b2Vec2( 0, _gravity );
-
         }
 
         public function setWorldEdges( bottom:Boolean = false, top:Boolean = false, left:Boolean = false, right:Boolean = false ):void
