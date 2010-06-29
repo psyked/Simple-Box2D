@@ -284,7 +284,7 @@ package couk.psyked.box2d
 			fd.friction = 5;
 			var shapeDef:b2CircleShape = new b2CircleShape( radius / options.scale );
 
-			var body:b2Body = _world.CreateBody( bodyDef );
+			var body:b2Body = _world.CreateBody( bodyDef);
 			body.SetAngle(( rotation % 360 ) * ( Math.PI / 180 ));
 			body.CreateFixture( fd );
 		}
