@@ -3,10 +3,10 @@ package couk.psyked.box2d.utils
     import Box2D.Collision.Shapes.b2Shape;
     import Box2D.Collision.b2AABB;
     import Box2D.Common.Math.b2Vec2;
-    import Box2D.Common.Math.b2XForm;
     import Box2D.Dynamics.b2Body;
+    import Box2D.Dynamics.b2Fixture;
     import Box2D.Dynamics.b2World;
-
+    
     import flash.display.Sprite;
     import flash.geom.Point;
 
@@ -36,25 +36,26 @@ package couk.psyked.box2d.utils
             var aabb:b2AABB = new b2AABB();
             aabb.lowerBound.Set( real_x_mouse - accuracy, real_y_mouse - accuracy );
             aabb.upperBound.Set( real_x_mouse + accuracy, real_y_mouse + accuracy );
-            var shapes:Array = new Array();
-            var count:int = m_world.Query( aabb, shapes, k_maxCount );
-            var bodies:Array = new Array();
-            for ( var i:int = 0; i < count; ++i )
-            {
-                if ( shapes[ i ].GetBody().IsStatic() == false || includeStatic )
-                {
-                    var tShape:b2Shape = shapes[ i ] as b2Shape;
-                    //trace(tShape, tShape.GetBody().GetXForm());
-                    var a:b2XForm = tShape.GetBody().GetXForm();
-                    var inside:Boolean = tShape.TestPoint( tShape.GetBody().GetXForm(), mousePVec );
-                    if ( inside )
-                    {
-                        bodies.push( tShape.GetBody());
-                       // break;
-                    }
-                }
-            }
-            return bodies;
+			var body:b2Body = null;
+			var fixture:b2Fixture;
+			var bodies:Array = new Array();
+			// Query the world for overlapping shapes.
+			function GetBodyCallback(fixture:b2Fixture):Boolean
+			{
+				var shape:b2Shape = fixture.GetShape();
+				if (fixture.GetBody().GetType() != b2Body.b2_staticBody || includeStatic)
+				{
+					var inside:Boolean = shape.TestPoint(fixture.GetBody().GetTransform(), mousePVec);
+					if (inside)
+					{
+						bodies.push(fixture.GetBody());
+						//return false;
+					}
+				}
+				return true;
+			}
+			m_world.QueryAABB(GetBodyCallback, aabb);
+			return bodies;
         }
 
         public static function getTopBodyAtPoint( point:Point, includeStatic:Boolean = false ):b2Body
@@ -69,23 +70,26 @@ package couk.psyked.box2d.utils
             var aabb:b2AABB = new b2AABB();
             aabb.lowerBound.Set( real_x_mouse - accuracy, real_y_mouse - accuracy );
             aabb.upperBound.Set( real_x_mouse + accuracy, real_y_mouse + accuracy );
-            var shapes:Array = new Array();
-            var count:int = m_world.Query( aabb, shapes, k_maxCount );
-            var body:b2Body = null;
-            for ( var i:int = 0; i < count; ++i )
-            {
-                if ( shapes[ i ].GetBody().IsStatic() == false || includeStatic )
-                {
-                    var tShape:b2Shape = shapes[ i ] as b2Shape;
-                    var inside:Boolean = tShape.TestPoint( tShape.GetBody().GetXForm(), mousePVec );
-                    if ( inside )
-                    {
-                        body = tShape.GetBody();
-                        break;
-                    }
-                }
-            }
-            return body;
+			var body:b2Body = null;
+			var fixture:b2Fixture;
+			
+			// Query the world for overlapping shapes.
+			function GetBodyCallback(fixture:b2Fixture):Boolean
+			{
+				var shape:b2Shape = fixture.GetShape();
+				if (fixture.GetBody().GetType() != b2Body.b2_staticBody || includeStatic)
+				{
+					var inside:Boolean = shape.TestPoint(fixture.GetBody().GetTransform(), mousePVec);
+					if (inside)
+					{
+						body = fixture.GetBody();
+						return false;
+					}
+				}
+				return true;
+			}
+			m_world.QueryAABB(GetBodyCallback, aabb);
+			return body;
         }
 
         public static function initialise( _m_world:b2World, _m_physScale:Number, _m_sprite:Sprite ):void
