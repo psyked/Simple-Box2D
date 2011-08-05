@@ -1,5 +1,7 @@
 package couk.psyked.box2d.utils.library
 {
+    import flash.geom.Point;
+    
     import wumedia.vector.VectorShapes;
 
     public class ShapeParser extends VectorShapes
@@ -9,7 +11,7 @@ package couk.psyked.box2d.utils.library
             super();
         }
 
-        static public function getPoints( id:String, scale:Number = 1.0, levelOfDetail:uint = 30 ):Array
+        static public function getPoints( id:String, scale:Number = 1.0, levelOfDetail:uint = 30 ):Vector.<Vector.<Point>>
         {
             if ( VectorShapes.library[ id ])
             {

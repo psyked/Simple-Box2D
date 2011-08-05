@@ -1,5 +1,6 @@
 package couk.psyked.box2d.utils.shape
 {
+	import flash.geom.Point;
 
     public class Triangulate
     {
@@ -11,9 +12,9 @@ package couk.psyked.box2d.utils.shape
             //constructor 
         }
 
-        public function process( contour:Array ):Array
+        public function process( contour:Vector.<Point> ):Vector.<Point>
         {
-            var result:Array = new Array();
+            var result:Vector.<Point> = new Vector.<Point>();
             var n:int = contour.length;
 
             if ( n < 3 )
@@ -110,7 +111,7 @@ package couk.psyked.box2d.utils.shape
         }
 
         // calculate area of the contour polygon
-        public function area( contour:Array ):Number
+        public function area( contour:Vector.<Point> ):Number
         {
             var n:int = contour.length;
             var a:Number = 0.0;
@@ -149,7 +150,7 @@ package couk.psyked.box2d.utils.shape
             return (( aCROSSbp >= 0.0 ) && ( bCROSScp >= 0.0 ) && ( cCROSSap >= 0.0 ));
         }
 
-        private function snip( contour:Array, u:int, v:int, w:int, n:int, verts:Array ):Boolean
+        private function snip( contour:Vector.<Point>, u:int, v:int, w:int, n:int, verts:Array ):Boolean
         {
             var p:int;
             var ax:Number, ay:Number, bx:Number, by:Number;

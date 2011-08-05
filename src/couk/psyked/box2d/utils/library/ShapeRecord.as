@@ -16,10 +16,10 @@ package couk.psyked.box2d.utils.library
             super( data, tagType );
         }
 
-        static public function getPoints( shape:wumedia.parsers.swf.ShapeRecord, scale:Number = 1.0, levelOfDetail:uint = 30 ):Array
+        static public function getPoints( shape:wumedia.parsers.swf.ShapeRecord, scale:Number = 1.0, levelOfDetail:uint = 30 ):Vector.<Vector.<Point>>
         {
-            var rtn:Array = new Array();
-            var shapes:Array = new Array();
+            var rtn:Vector.<Vector.<Point>> = new Vector.<Vector.<Point>>();
+            var shapes:Vector.<Point> = new Vector.<Point>();
             var elems:Array = shape.elements;
             var elemNum:int = -1;
             var elemLen:int = elems.length;
@@ -37,7 +37,7 @@ package couk.psyked.box2d.utils.library
                         {
                             rtn.push( shapes );
                         }
-                        shapes = new Array();
+                        shapes = new Vector.<Point>();
                     }
                     if ( edge.type == Edge.CURVE )
                     {

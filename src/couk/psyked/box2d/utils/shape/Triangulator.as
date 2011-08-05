@@ -1,6 +1,8 @@
 package couk.psyked.box2d.utils.shape
 {
     import flash.geom.Point;
+    
+    import mx.charts.chartClasses.PolarChart;
 
     public class Triangulator
     {
@@ -8,7 +10,7 @@ package couk.psyked.box2d.utils.shape
         /* give it an array of points (vertexes)
          * returns an array of Triangles
          * */
-        public static function triangulatePolygon( v:Array ):Array
+        public static function triangulatePolygon( v:Vector.<Point> ):Vector.<Triangle>
         {
             var xA:Array = new Array();
             var yA:Array = new Array();
@@ -25,7 +27,7 @@ package couk.psyked.box2d.utils.shape
         /* give it a list of vertexes as flat arrays
          * returns an array of Triangles
          * */
-        public static function triangulatePolygonFromFlatArray( xv:Array, yv:Array ):Array
+        public static function triangulatePolygonFromFlatArray( xv:Array, yv:Array ):Vector.<Triangle>
         {
             if ( xv.length < 3 || yv.length < 3 || yv.length != xv.length )
             {
@@ -36,7 +38,7 @@ package couk.psyked.box2d.utils.shape
             var i:int = 0;
             var vNum:int = xv.length;
 
-            var buffer:Array = new Array();
+            var buffer:Vector.<Triangle> = new Vector.<Triangle>();
             var bufferSize:int = 0;
             var xrem:Array = new Array();
             var yrem:Array = new Array();
@@ -164,7 +166,7 @@ package couk.psyked.box2d.utils.shape
         /* takes: array of Triangles
          * returns: array of Polygons
          * */
-        public static function polygonizeTriangles( triangulated:Array ):Array
+        public static function polygonizeTriangles( triangulated:Vector.<Triangle> ):Vector.<Polygon>
         {
             var polys:Array;
             var polyIndex:int = 0;
@@ -227,7 +229,7 @@ package couk.psyked.box2d.utils.shape
                 }
             }
 
-            var ret:Array = new Array();
+            var ret:Vector.<Polygon> = new Vector.<Polygon>();
             //for ( i in 0...polyIndex )
             for ( var i:int = 0; i < polyIndex; i++ )
             {

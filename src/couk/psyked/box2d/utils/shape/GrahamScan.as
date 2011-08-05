@@ -21,7 +21,7 @@ package couk.psyked.box2d.utils.shape
         /**
          *  Returns a convex hull given an unordered array of points.
          */
-        public function convexHull( data:Array ):Array
+        public function convexHull( data:Vector.<Point> ):Vector.<Point>
         {
             return findHull( order( data ));
         }
@@ -29,7 +29,7 @@ package couk.psyked.box2d.utils.shape
         /**
          *  Orders an array of points counterclockwise.
          */
-        public function order( data:Array ):Array
+        public function order( data:Vector.<Point> ):Vector.<Point>
         {
             //trace("GrahamScan::order()");
             // first run through all the points and find the upper left [lower left]
@@ -80,7 +80,7 @@ package couk.psyked.box2d.utils.shape
             neg.sortOn( "cotangent", Array.NUMERIC | Array.DESCENDING );
             sorted = neg.concat( pos );
 
-            var ordered:Array = new Array();
+            var ordered:Vector.<Point> = new Vector.<Point>();
             ordered.push( p );
             //for ( i in 0...n )
             for ( i = 0; i < n; i++ )
@@ -99,11 +99,11 @@ package couk.psyked.box2d.utils.shape
          *  filter the points and return an array containing the vertices of a
          *  convex polygon that envelopes those points.
          */
-        public function findHull( data:Array ):Array
+        public function findHull( data:Vector.<Point> ):Vector.<Point>
         {
             //trace("GrahamScan::findHull()");
             var n:int = data.length;
-            var hull:Array = new Array();
+            var hull:Vector.<Point> = new Vector.<Point>();
             hull.push( data[ 0 ]); // add the pivot
             hull.push( data[ 1 ]); // makes first vector
 

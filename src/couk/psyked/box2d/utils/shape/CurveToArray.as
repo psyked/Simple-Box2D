@@ -22,11 +22,6 @@ package couk.psyked.box2d.utils.shape
 {
     import flash.geom.Point;
 
-
-    /**
-     *
-     * @author James
-     */
     public class CurveToArray
     {
         /**
@@ -37,7 +32,7 @@ package couk.psyked.box2d.utils.shape
          * @param yC
          * @param x2
          * @param y2
-         * @param levelOfDetail
+         * @param levelOfDetail Maximum angle to trace.
          * @return
          */
         public static function getCurveArray( x1:int, y1:int, xC:int, yC:int, x2:int, y2:int, levelOfDetail:uint ):Array

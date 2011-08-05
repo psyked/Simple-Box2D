@@ -1,16 +1,5 @@
 package couk.psyked.box2d
 {
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import flash.events.MouseEvent;
-	import flash.events.SecurityErrorEvent;
-	import flash.events.TimerEvent;
-	import flash.geom.Point;
-	import flash.net.URLLoader;
-	import flash.net.URLLoaderDataFormat;
-	import flash.net.URLRequest;
-	import flash.utils.Timer;
 	import Box2D.Collision.Shapes.b2CircleShape;
 	import Box2D.Collision.Shapes.b2PolygonShape;
 	import Box2D.Common.Math.b2Vec2;
@@ -22,12 +11,27 @@ package couk.psyked.box2d
 	import Box2D.Dynamics.b2BodyDef;
 	import Box2D.Dynamics.b2FixtureDef;
 	import Box2D.Dynamics.b2World;
+	
 	import couk.psyked.box2d.utils.MouseUtils;
 	import couk.psyked.box2d.utils.PointUtils;
 	import couk.psyked.box2d.utils.WorldUtils;
 	import couk.psyked.box2d.utils.library.ShapeParser;
 	import couk.psyked.box2d.utils.shape.PolygonTool;
 	import couk.psyked.box2d.vo.WorldOptions;
+	
+	import flash.display.DisplayObject;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.MouseEvent;
+	import flash.events.SecurityErrorEvent;
+	import flash.events.TimerEvent;
+	import flash.geom.Point;
+	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
+	import flash.net.URLRequest;
+	import flash.utils.Timer;
+	
 	import wumedia.vector.VectorShapes;
 
 	public class Box2DWorld extends Sprite
@@ -38,8 +42,8 @@ package couk.psyked.box2d
 			options = _options;
 			_world = world;
 			//worldSprite = WorldUtils.addDebugDraw(world);
-			MouseUtils.initialise(_world, options.scale, worldSprite);
-			PointUtils.initialise(_world, options.scale, worldSprite);
+			//MouseUtils.initialise(_world, options.scale, worldSprite);
+			//PointUtils.initialise(_world, options.scale, worldSprite);
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -177,7 +181,7 @@ package couk.psyked.box2d
 		 * @param points
 		 * @param rotation
 		 */
-		public function createComplexPolygon(x:int, y:int, points:Array, rotation:int = 0):void
+		public function createComplexPolygon(x:int, y:int, points:Vector.<Point>, rotation:int = 0):b2Body
 		{
 			if (points.length < 3)
 			{
@@ -218,17 +222,18 @@ package couk.psyked.box2d
 					makeComplexBody(body, points);
 				}
 			}
-		/* var processedVerts:Array = PolygonTool.getTriangulatedPoly( points );
+			/* var processedVerts:Array = PolygonTool.getTriangulatedPoly( points );
 
-		   if ( processedVerts != null )
-		   {
-		   makeComplexBody( body, processedVerts );
-		   }
-		   else
-		   {
-		   makeComplexBody( body, PolygonTool.getConvexPoly( points ));
-		 } */
-			 //body.SetMassFromShapes();
+			   if ( processedVerts != null )
+			   {
+			   makeComplexBody( body, processedVerts );
+			   }
+			   else
+			   {
+			   makeComplexBody( body, PolygonTool.getConvexPoly( points ));
+			 } */
+			//body.SetMassFromShapes();
+			return body;
 		}
 
 		public function createDisanceJoint(body1:b2Body, body2:b2Body, _a1:Point = null, _a2:Point = null):void
@@ -260,7 +265,7 @@ package couk.psyked.box2d
 		/**
 		 * Loads the specified library file, and extracts the named library item from it, parsing it into a Box2D object.
 		 */
-		public function createPolyFromLibraryShape(x:int, y:int, shapeName:String, libraryName:String, rotation:int = 0, levelOfDetail:uint = 5):void
+		public function createPolyFromExternalLibraryShape(x:int, y:int, shapeName:String, libraryName:String, rotation:int = 0, levelOfDetail:uint = 5):void
 		{
 
 			var loader:URLLoader = new URLLoader();
@@ -288,11 +293,11 @@ package couk.psyked.box2d
 				VectorShapes.extractFromLibrary(loader.data, [shapeName]);
 
 				//var points:Array = Box2DShapeParser.getPoints( shapeName, 1, levelOfDetail * options.scale );
-				var points:Array = ShapeParser.getPoints(shapeName, 1, levelOfDetail);
+				var points:Vector.<Vector.<Point>> = ShapeParser.getPoints(shapeName, 1, levelOfDetail);
 
 				if (points)
 				{
-					for each (var shapePoints:Array in points)
+					for each (var shapePoints:Vector.<Point> in points)
 					{
 						if (shapePoints.length > 2)
 						{
@@ -310,6 +315,36 @@ package couk.psyked.box2d
 				}
 			}
 
+		}
+
+		public function createPolyFromLibraryShape(x:int, y:int, shapeName:String, rotation:int = 0, levelOfDetail:uint = 5, displayList:DisplayObject = null):Array
+		{
+			if (displayList)
+			{
+				VectorShapes.extractFromLibrary(displayList.root.loaderInfo.bytes, [shapeName]);
+			}
+			else
+			{
+				VectorShapes.extractFromLibrary(root.loaderInfo.bytes, [shapeName]);
+			}
+			//var points:Array = Box2DShapeParser.getPoints( shapeName, 1, levelOfDetail * options.scale );
+			var points:Vector.<Vector.<Point>> = ShapeParser.getPoints(shapeName, 1, levelOfDetail);
+			var rtn:Array = new Array();
+			if (points)
+			{
+				for each (var shapePoints:Vector.<Point> in points)
+				{
+					if (shapePoints.length > 2)
+					{
+						rtn.push(createComplexPolygon(x, y, shapePoints, rotation));
+					}
+					else
+					{
+						trace("Error getting points from Shape in library.");
+					}
+				}
+			}
+			return rtn;
 		}
 
 		public function createRectangle(_x:int, _y:int, _width:int, _height:int, _rotation:int = 0):b2Body
@@ -337,6 +372,7 @@ package couk.psyked.box2d
 			fixtureDef.friction = 5; //groundSprite.friction;
 			var body:b2Body = _world.CreateBody(bodyDef);
 			body.CreateFixture(fixtureDef);
+			
 			//body.SetMassFromShapes();
 			//body.SetUserData(groundSprite);
 			return body;
@@ -485,24 +521,24 @@ package couk.psyked.box2d
 		}
 
 
-		internal function makeComplexBody(body:b2Body, processedVerts:Array):void
+		internal function makeComplexBody(body:b2Body, processedVerts:Vector.<Point>):void
 		{
-			var vertArray:Array = processedVerts.slice(0);
+			var vertArray:Vector.<Point> = processedVerts.slice(0);
 			if (!PolygonTool.isPolyClockwise(vertArray))
 			{
 				vertArray.reverse();
 			}
-			var polys:Array = PolygonTool.earClip(vertArray);
-			trace("Have split shape into " + polys.length + " separate shapes");
+			var polys:Vector.<Vector.<Point>> = PolygonTool.earClip(vertArray);
 
 			fixtureDef.density = 1;
 			fixtureDef.friction = 5;
-			
-			processedVerts.push(processedVerts[0]);
+
+			//processedVerts.push(processedVerts[0]);
 
 			if (polys != null)
 			{
-				for each (var poly:Array in polys)
+				trace("Have split shape into " + polys.length + " separate shapes");
+				for each (var poly:Vector.<Point> in polys)
 				{
 					trace("Creating new shape");
 					trace("New shape will have " + poly.length + " sides");
@@ -524,7 +560,7 @@ package couk.psyked.box2d
 			}
 		}
 
-		internal function makeSimpleBody(body:b2Body, _verticies:Array):void
+		internal function makeSimpleBody(body:b2Body, _verticies:Vector.<Point>):void
 		{
 			/*var vertArray:Array = p_vertices.slice(0);
 			vertArray.reverse();
