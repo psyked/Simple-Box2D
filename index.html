@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Simple Box2D (for the Flash Player) : A series of wrapper classes and utility methods to make it easier to create complex Box2D Physics based simulations in ActionScript 3." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Simple Box2D (for the Flash Player)</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/psyked/Simple-Box2D">View on GitHub</a>
+
+          <h1 id="project_title">Simple Box2D (for the Flash Player)</h1>
+          <h2 id="project_tagline">A series of wrapper classes and utility methods to make it easier to create complex Box2D Physics based simulations in ActionScript 3.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/psyked/Simple-Box2D/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/psyked/Simple-Box2D/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>What is Simple Box2D?</h1>
+
+<p>Simple-Box2D is a few ActionScript 3 classes that encapsulate the functionality of the awesome <a href="http://box2dflash.sourceforge.net/">Box2DFlashAS3</a> library, and puts them into a format which is a little more familiar to traditional ActionScript 3 developers.</p>
+
+<h1>Main library features:</h1>
+
+<ul>
+<li>A really simple wrapper class which makes it quick and easy to establish a new Box2D World environment.</li>
+<li>A simple wrapper for creating new basic shapes.</li>
+<li><strong>A complex polygon creation tool - which can import simple shapes from a Flash Professional library and convert them to complex physical shapes, automagically.</strong></li>
+</ul><h3>Simple-Box2D makes it easy to go from this:</h3>
+
+<p><img src="http://uploads.psyked.co.uk/2010/01/flashview.jpg" alt="From the Flash IDE"></p>
+
+<h3>To this!</h3>
+
+<p><img src="http://uploads.psyked.co.uk/2010/01/box2dview.jpg" alt="To the Flash Player"></p>
+
+<h1>Similar libraries and feature comparison</h1>
+
+<p>Simple-Box2D is built for Box2D version 2.0.1. There are no plans to update the source code to work with the newer, more powerful version 2.1a.</p>
+
+<p><a href="http://actionsnippet.com/?page_id=1391">Quick Box2D</a> is another ActionScript 3 library with a similar aim, but is more established, built and maintained by more than one developer, and although it doesn't have the same ability to create complex polygons from Flash Professional library data, is probably a better choice.</p>
+
+<h1>Getting started</h1>
+
+<p>Download the source code from GitHub; add it to your ActionScript 3 project, and you're ready to get started.</p>
+
+<h3>Creating a simple Box2D world:</h3>
+
+<pre><code>var options:Box2DWorldOptions = new Box2DWorldOptions( 500, 280, 30, 9.8 );
+    options.setWorldEdges( true, true, true, true );
+
+var world:Box2DWorld = Box2DUtils.createBoxedWorld( options );
+    world.debugDraw = true;
+    world.animateOnEnterFrame = true;
+addChild( world );
+
+for ( var i:int = 0; i &lt; 30; i++ )
+{
+    world.createCircle( 500 * Math.random(), 280 * Math.random(), 50 * Math.random());
+}
+</code></pre>
+
+<h3>Creating a polygon from an array of points:</h3>
+
+<p>Shapes in Box2D come in three basic flavours – circle, rectangle and custom polygon. Normally, everything must be convex (no inny bits), have no more than 8 sides, and can’t have holes. With the libraries included in this library, it's a little less restrictive than that.</p>
+
+<p>Using some clever triangulation code from <a href="http://www.splashdust.net/2009/10/box2d-mouse-drawing-now-with-ear-clipping/">Splashdust.net</a>, there’s a simple method for creating any custom shape from an array of Point objects.  With this method you can create a shape with any number of sides, and not worry about whether the shape is concave or convex.  It’ll still break if the edges of your shape interest each other, and doesn’t support holes in the objects you’re creating, but it’s a start.</p>
+
+<p>Here's the code you'll need to create a polygon from an array of points:</p>
+
+<pre><code>var array:Array = [
+                new Point( 0, 0 ), 
+                new Point( 10, 0 ), 
+                new Point( 10, 10 ), 
+                new Point( 20, 10 ), 
+                new Point( 20, 0 ), 
+                new Point( 30, 0 ), 
+                new Point( 30, 30 ), 
+                new Point( 0, 30 ) 
+               ];
+
+world.createComplexPolygon( 50, 50, array );
+</code></pre>
+
+<h3>Creating a polygon from a shape in a library:</h3>
+
+<p>This is where things get cool.  Creating a shape from a series of points is all well and good, but it’s a laborious process to set up and modify.  You can create a shape in the Flash IDE, add your symbol to your library and import it to Box2D.  Currently this method only supports single shapes on a single layer.</p>
+
+<pre><code>world.createPolyFromLibraryShape( 300, 100, "sampleShape", "vectorassets.swf" );
+</code></pre>
+
+<h3>Adding Mouse interaction:</h3>
+
+<p>What fun is a simulation if you can’t interact with it? So we now have an easy way to add mouse joints to move things about.  In the next version it’s my plan to add a method for filtering out objects, presumably based on each bodies userData.</p>
+
+<pre><code>world.mouseInteraction = true;
+</code></pre>
+
+<h3>Framerate independent animation:</h3>
+
+<pre><code>world.framerateIndependantAnimation = true;
+
+var options:Box2DWorldOptions = new Box2DWorldOptions( 500, 280, 30, 9.8 );
+    options.setWorldEdges( true, true, true, true );
+
+var world:Box2DWorld = Box2DUtils.createBoxedWorld( options );
+    world.debugDraw = true;
+    world.mouseInteractExclusions = new Array();
+    world.mouseInteraction = true;
+    world.framerateIndependantAnimation = true;
+addChild( world );
+</code></pre>
+
+<h1>History</h1>
+
+<p>The Simple Box2D classes were initially developed by James Ford (<a href="http://twitter.com/#!/psyked_james">@psyked_james</a>) of <a href="http://www.psyked.co.uk">http://www.psyked.co.uk</a> and were initially discussed and posted in four blog posts on that website:</p>
+
+<ol>
+<li><a href="http://www.psyked.co.uk/actionscript/simplifying-box2das3.htm">Simplifying Box2DAS3…</a></li>
+<li><a href="http://www.psyked.co.uk/box2d/simple-box2d-custom-polygon-creation.htm">Simple Box2D – Custom Polygon creation.</a></li>
+<li><a href="http://www.psyked.co.uk/actionscript/starrequests-simple-box2d-flickr-mashup-sample.htm">StarRequests, Simple-Box2D &amp; Flickr – a example mashup.</a></li>
+<li><a href="http://www.psyked.co.uk/box2d/a-more-advanced-starrequests-simple-box2d-flickr-example.htm">A more advanced StarRequests, Simple-Box2D &amp; Flickr example.</a></li>
+<li><a href="http://www.psyked.co.uk/box2d/demo-source-simple-box2d-with-curved-edges.htm">Demo &amp; Source: Simple Box2D, with curved edges!</a></li>
+<li><a href="http://www.psyked.co.uk/box2d/simple-box2d-better-cleverer-more-optimised.htm">Simple Box2D – Better, cleverer, more optimised.</a></li>
+</ol><p>Simple-Box2D has been used to create the levels for the Flash game <a href="http://www.mmtdigital.co.uk/Flash/ChristmasGame2009/Building_Bridges.html">"Building Bridges".</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Simple Box2D (for the Flash Player) maintained by <a href="https://github.com/psyked">psyked</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
