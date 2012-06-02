@@ -88,5 +88,6 @@ The Simple Box2D classes were initially developed by James Ford ([@psyked_james]
 3. [StarRequests, Simple-Box2D & Flickr – a example mashup.](http://www.psyked.co.uk/actionscript/starrequests-simple-box2d-flickr-mashup-sample.htm)
 4. [A more advanced StarRequests, Simple-Box2D & Flickr example.](http://www.psyked.co.uk/box2d/a-more-advanced-starrequests-simple-box2d-flickr-example.htm)
 5. [Demo & Source: Simple Box2D, with curved edges!](http://www.psyked.co.uk/box2d/demo-source-simple-box2d-with-curved-edges.htm)
+6. [Simple Box2D – Better, cleverer, more optimised.](http://www.psyked.co.uk/box2d/simple-box2d-better-cleverer-more-optimised.htm)
 
 Simple-Box2D has been used to create the levels for the Flash game ["Building Bridges".](http://www.mmtdigital.co.uk/Flash/ChristmasGame2009/Building_Bridges.html)
