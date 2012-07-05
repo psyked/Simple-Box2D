@@ -90,7 +90,7 @@ package couk.psyked.box2d.utils.shape
             var i:int = 0;
 
             //for ( i in 0...nVertices )
-            for ( var i:int = 0; i < nVertices; i++ )
+            for ( i = 0; i < nVertices; i++ )
             {
                 if ( t.x[ 0 ] == this.x[ i ] && t.y[ 0 ] == this.y[ i ])
                 {
@@ -158,10 +158,10 @@ package couk.psyked.box2d.utils.shape
 
             var newx:Array = new Array();
             var newy:Array = new Array();
-            var currOut = 0;
+            var currOut:Number = 0;
 
             //for ( i in 0...nVertices )
-            for ( var i:int = 0; i < nVertices; i++ )
+            for ( i = 0; i < nVertices; i++ )
             {
                 newx[ currOut ] = x[ i ];
                 newy[ currOut ] = y[ i ];
