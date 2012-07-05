@@ -42,7 +42,7 @@ package couk.psyked.box2d.utils.shape
             var yrem:Array = new Array();
 
             //for ( i in 0...vNum )
-            for ( var i:int = 0; i < vNum; i++ )
+            for ( i = 0; i < vNum; i++ )
             {
                 xrem[ i ] = xv[ i ];
                 yrem[ i ] = yv[ i ];
@@ -51,9 +51,9 @@ package couk.psyked.box2d.utils.shape
             while ( vNum > 3 )
             {
                 //Find an ear
-                var earIndex = -1;
+                var earIndex:Number = -1;
                 //for ( i in 0...vNum )
-                for ( var i:int = 0; i < vNum; i++ )
+                for ( i = 0; i < vNum; i++ )
                 {
                     if ( isEar( i, xrem, yrem ))
                     {
@@ -84,7 +84,7 @@ package couk.psyked.box2d.utils.shape
                 var newy:Array = new Array();
                 var currDest:int = 0;
                 //for ( i in 0...vNum )
-                for ( var i:int = 0; i < vNum; i++ )
+                for ( i = 0; i < vNum; i++ )
                 {
                     if ( currDest == earIndex )
                         ++currDest;
@@ -114,7 +114,7 @@ package couk.psyked.box2d.utils.shape
 
             var res:Array = new Array();
             //for ( i in 0...bufferSize )
-            for ( var i:int = 0; i < bufferSize; i++ )
+            for ( i = 0; i < bufferSize; i++ )
             {
                 res[ i ] = buffer[ i ];
             }
@@ -148,7 +148,7 @@ package couk.psyked.box2d.utils.shape
             angles.push( acosA );
             angles.push( acosB );
             angles.push( acosC );
-            angles.sort( function( x, y )
+            angles.sort( function( x:Number, y:Number ):Number
                 {
                     if ( x > y )
                         return 1;
@@ -181,7 +181,7 @@ package couk.psyked.box2d.utils.shape
                 polys = new Array();
                 var covered:Array = new Array();
                 //for ( i in 0...triangulated.length )
-                for ( var i:int = 0; i < triangulated.length; i++ )
+                for ( i = 0; i < triangulated.length; i++ )
                 {
                     covered[ i ] = false;
                 }
@@ -192,7 +192,7 @@ package couk.psyked.box2d.utils.shape
                 {
                     var currTri:int = -1;
                     //for ( i in 0...triangulated.length )
-                    for ( var i:int = 0; i < triangulated.length; i++ )
+                    for ( i = 0; i < triangulated.length; i++ )
                     {
                         if ( covered[ i ])
                             continue;
@@ -208,7 +208,7 @@ package couk.psyked.box2d.utils.shape
                         poly = new Polygon( triangulated[ currTri ].x, triangulated[ currTri ].y );
                         covered[ currTri ] = true;
                         //for ( i in 0...triangulated.length )
-                        for ( var i:int = 0; i < triangulated.length; i++ )
+                        for ( i = 0; i < triangulated.length; i++ )
                         {
                             if ( covered[ i ])
                                 continue;
@@ -229,7 +229,7 @@ package couk.psyked.box2d.utils.shape
 
             var ret:Array = new Array();
             //for ( i in 0...polyIndex )
-            for ( var i:int = 0; i < polyIndex; i++ )
+            for ( i = 0; i < polyIndex; i++ )
             {
                 ret[ i ] = polys[ i ];
             }

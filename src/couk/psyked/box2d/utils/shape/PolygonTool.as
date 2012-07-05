@@ -18,7 +18,7 @@ package couk.psyked.box2d.utils.shape
         {
             // Touchmypixel's triangulator needs an array of points.
             var points:Array = new Array();
-            for each ( var v in p_vertices )
+            for each ( var v:Object in p_vertices )
             {
                 points.push( new Point( v.x, v.y ));
             }
